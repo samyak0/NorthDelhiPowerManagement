@@ -34,27 +34,4 @@ public class Main {
         System.out.println(" 3. Exit");
         System.out.println("-----------------------");
     }
-//        try {
-//            Customer c = new Customer("samyak", "111", "222", "gh-4", "@.com", 32);
-//            Document dd = c.toDoc();
-//            MongoDbUtils.CUSTOMERCOLLECTION.insertOne(dd);
-//            System.out.println(dd.getObjectId("_id").toString());
-//            Document d = MongoDbUtils.CUSTOMERCOLLECTION.find(eq("name", "samyak")).iterator().tryNext();
-//            Customer newC = Util.docToCustomer(d);
-//            System.out.println(newC.getName() + newC.getId());
-//            newC.setName("samyakNew");
-//            dd = newC.toDoc();
-//            MongoDbUtils.CUSTOMERCOLLECTION.insertOne(dd);
-//            MongoDbUtils.CUSTOMERCOLLECTION.updateOne(eq("_id", d.getObjectId("_id")), Updates.set("", ""), new UpdateOptions().upsert(true));
-////            Document doc = new Document()
-////                    .append("some_key", "value")
-////                .append("array", Arrays.asList(
-////                        new Document().append("key1", "value1"),
-////                        new Document().append("key2", "value2")
-////                ));
-////            MongoDbCollections.CUSTOMERCOLLECTION.insertOne(doc);
-//        }catch (Exception e){
-//            System.out.println(e.getMessage());
-//        }
-//    }
 }
