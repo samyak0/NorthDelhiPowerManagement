@@ -1,7 +1,7 @@
-package FunctionClasses;
+package functionClasses;
 
-import Utils.MongoDbUtils;
-import Utils.Util;
+import utils.MongoDbUtils;
+import utils.Util;
 import databaseClasses.Complaint;
 import databaseClasses.Customer;
 import databaseClasses.Request;

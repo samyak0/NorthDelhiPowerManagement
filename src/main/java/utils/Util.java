@@ -1,4 +1,4 @@
-package Utils;
+package utils;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;

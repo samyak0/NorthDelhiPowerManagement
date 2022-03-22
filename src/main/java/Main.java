@@ -1,4 +1,4 @@
-import FunctionClasses.CustomerFunctions;
+import functionClasses.CustomerFunctions;
 
 import java.util.Scanner;
 
