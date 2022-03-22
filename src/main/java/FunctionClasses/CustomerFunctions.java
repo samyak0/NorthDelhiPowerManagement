@@ -322,5 +322,4 @@ public class CustomerFunctions {
 
         this.currentUser = Util.docToCustomer(doc);
     }
-
 }

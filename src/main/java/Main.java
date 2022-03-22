@@ -1,4 +1,3 @@
-import FunctionClasses.AdminFunctions;
 import FunctionClasses.CustomerFunctions;
 
 import java.util.Scanner;
@@ -10,7 +9,6 @@ public class Main {
         Scanner scn = new Scanner(System.in);
         int choice = 0;
         CustomerFunctions customerFunctions = new CustomerFunctions();
-        AdminFunctions adminFunctions = new AdminFunctions();
 
         while (choice != 3) {
             showMenu();
@@ -20,7 +18,7 @@ public class Main {
             System.out.print("\033[H\033[2J"); // To clear the terminal
             switch (choice) {
                 case 1 -> customerFunctions.startAuthenticationFlow();
-                case 2 -> adminFunctions.startAuthenticationFlow();
+                case 2 -> {}
                 case 3 -> {}
                 default -> System.out.println("!! Please enter a valid choice !!\n");
             }

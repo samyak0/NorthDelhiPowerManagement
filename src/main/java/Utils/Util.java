@@ -12,29 +12,13 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.Scanner;
 
 import static com.mongodb.client.model.Filters.eq;
-import static java.util.Map.entry;
 
 public class Util {
 
     private static final Scanner scn = new Scanner(System.in);
-    public static Map<Integer, String> MONTH_MAPPING = Map.ofEntries(
-            entry(1, "JAN"),
-            entry(2, "FEB"),
-            entry(3, "MAR"),
-            entry(4, "APR"),
-            entry(5, "MAY"),
-            entry(6, "JUN"),
-            entry(7, "JUL"),
-            entry(8, "AUG"),
-            entry(9, "SEP"),
-            entry(10, "OCT"),
-            entry(11, "NOV"),
-            entry(12, "DEC")
-    );
 
     public static Customer docToCustomer(final @NotNull Document doc) {
         return new Customer(
