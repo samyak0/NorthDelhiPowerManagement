@@ -1,34 +1,33 @@
 package databaseClasses;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 public class Request {
 
-    public Request(){}
-    public Request(String customerId, boolean isApproved, RequestType requestType, Customer updatedCustomer) {
+    public Request(String customerId, boolean isApproved, RequestType requestType, String email) {
         this.customerId = customerId;
         this.isApproved = isApproved;
         this.requestType = requestType;
-        this.updatedCustomer = updatedCustomer;
+        this.email = email;
     }
-    public Request(String id, String customerId, boolean isApproved, RequestType requestType, Customer updatedCustomer) {
+    public Request(String id, String customerId, boolean isApproved, RequestType requestType, String email) {
         this.id = id;
         this.customerId = customerId;
         this.isApproved = isApproved;
         this.requestType = requestType;
-        this.updatedCustomer = updatedCustomer;
+        this.email = email;
     }
 
     private String id;
     private String customerId;
     private boolean isApproved;
     private RequestType requestType;
-    private Customer updatedCustomer;
+    private String email;
 
 
     public enum RequestType {
-        NEW_CONNECTION,
-        UPDATE_CONNECTION
+        NEW_CONNECTION
     }
 
     public Document toDoc() {
@@ -36,9 +35,9 @@ public class Request {
                 .append("customerId", this.customerId)
                 .append("isApproved", this.isApproved)
                 .append("requestType", this.requestType.name())
-                .append("updatedCustomer", this.updatedCustomer);
+                .append("email", this.email);
         if(this.id != null){
-            doc.append("_id", this.id);
+            doc.append("_id", new ObjectId(this.id));
         }
         return doc;
     }
@@ -75,12 +74,12 @@ public class Request {
         this.requestType = requestType;
     }
 
-    public Customer getUpdatedCustomer() {
-        return updatedCustomer;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUpdatedCustomer(Customer updatedCustomer) {
-        updatedCustomer = updatedCustomer;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
 

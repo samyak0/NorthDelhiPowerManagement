@@ -1,23 +1,18 @@
 package databaseClasses;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
+import utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Customer {
 
     public Customer() {}
-    public Customer(String name, String phone, String altPhone, String address, String email, int age) {
-        this.name = name;
-        this.phone = phone;
-        this.altPhone = altPhone;
-        this.address = address;
-        this.email = email;
-        this.age = age;
-    }
 
-    public Customer(String id, String name, String password, String phone, String altPhone, String address, String email, int age, String meterId, int readingUnits, boolean isPaused, boolean isRemoved, boolean isDefaulter, List<Usage> history) {
+    public Customer(String id, String name, String password, String phone, String altPhone, String address, String email, String securityQuestion, String securityAnswer, int age, String meterId, int readingUnits, boolean isPaused, boolean isRemoved, boolean isDefaulter, List<Document> history) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -25,13 +20,15 @@ public class Customer {
         this.altPhone = altPhone;
         this.address = address;
         this.email = email;
+        this.securityQuestion = securityQuestion;
+        this.securityAnswer = securityAnswer;
         this.age = age;
         this.meterId = meterId;
         this.readingUnits = readingUnits;
         this.isPaused = isPaused;
         this.isRemoved = isRemoved;
         this.isDefaulter = isDefaulter;
-        this.history = history;
+        this.history = (history == null || history.size() == 0) ? new ArrayList<>() : history.stream().map(Util::docToUsage).collect(Collectors.toList());
     }
 
     private String id;
@@ -41,6 +38,8 @@ public class Customer {
     private String altPhone;
     private String address;
     private String email;
+    private String securityQuestion;
+    private String securityAnswer;
     private int age;
     private String meterId;
     private int readingUnits;
@@ -52,26 +51,24 @@ public class Customer {
     public Document toDoc() {
         Document doc = new Document()
                 .append("name", this.name)
-                .append("password", hashPassword(this.password))
+                .append("password", this.password)
                 .append("phone", this.phone)
                 .append("altPhone", this.altPhone)
                 .append("address", this.address)
                 .append("email", this.email)
                 .append("age", this.age)
+                .append("securityQuestion", this.securityQuestion)
+                .append("securityAnswer", this.securityAnswer)
                 .append("meterId", this.meterId)
                 .append("readingUnits", this.readingUnits)
                 .append("isPaused", this.isPaused)
                 .append("isRemoved", this.isRemoved)
                 .append("isDefaulter", this.isDefaulter)
-                .append("history", this.history);
+                .append("history", this.history.stream().map(Util::usageToDoc).collect(Collectors.toList()));
         if(this.id != null){
-            doc.append("_id", this.id);
+            doc.append("_id", new ObjectId(this.id));
         }
         return doc;
-    }
-
-    private String hashPassword(String password){
-        return String.valueOf(password.hashCode());
     }
 
     public String getId() {
@@ -152,6 +149,22 @@ public class Customer {
 
     public boolean isRemoved() {
         return isRemoved;
+    }
+
+    public String getSecurityQuestion() {
+        return securityQuestion;
+    }
+
+    public void setSecurityQuestion(String securityQuestion) {
+        this.securityQuestion = securityQuestion;
+    }
+
+    public String getSecurityAnswer() {
+        return securityAnswer;
+    }
+
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
     }
 
     public void setRemoved(boolean removed) {

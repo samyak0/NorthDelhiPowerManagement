@@ -1,17 +1,11 @@
 package databaseClasses;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 public class Complaint {
 
     public Complaint() {}
-    public Complaint(String customerId, String meterId, String title, String message, String status) {
-        this.customerId = customerId;
-        this.meterId = meterId;
-        this.title = title;
-        this.message = message;
-        this.status = status;
-    }
     public Complaint(String id, String customerId, String meterId, String title, String message, String status) {
         this.id = id;
         this.customerId = customerId;
@@ -26,7 +20,7 @@ public class Complaint {
     private String meterId;
     private String title;
     private String message;
-    private String status;
+    private String status = "pending";
 
     public Document toDoc() {
         Document doc = new Document()
@@ -36,7 +30,7 @@ public class Complaint {
                 .append("message", this.message)
                 .append("status", this.status);
         if(this.id != null){
-            doc.append("_id", this.id);
+            doc.append("_id", new ObjectId(this.id));
         }
         return doc;
     }

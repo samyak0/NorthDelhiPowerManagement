@@ -1,5 +1,6 @@
-import FunctionClasses.AdminFunctions;
-import FunctionClasses.CustomerFunctions;
+import functionClasses.AdminFunctions;
+import functionClasses.CustomerFunctions;
+import utils.MongoDbUtils;
 
 import java.util.Scanner;
 
@@ -7,6 +8,11 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println("NORTH DELHI POWER MANAGEMENT SYSTEM");
+        System.out.println("Connecting to Database...");
+        if(!MongoDbUtils.initialize()) return;
+        System.out.print("\033[H\033[2J"); // To clear the terminal
+
         Scanner scn = new Scanner(System.in);
         int choice = 0;
         CustomerFunctions customerFunctions = new CustomerFunctions();
@@ -36,27 +42,4 @@ public class Main {
         System.out.println(" 3. Exit");
         System.out.println("-----------------------");
     }
-//        try {
-//            Customer c = new Customer("samyak", "111", "222", "gh-4", "@.com", 32);
-//            Document dd = c.toDoc();
-//            MongoDbUtils.CUSTOMERCOLLECTION.insertOne(dd);
-//            System.out.println(dd.getObjectId("_id").toString());
-//            Document d = MongoDbUtils.CUSTOMERCOLLECTION.find(eq("name", "samyak")).iterator().tryNext();
-//            Customer newC = Util.docToCustomer(d);
-//            System.out.println(newC.getName() + newC.getId());
-//            newC.setName("samyakNew");
-//            dd = newC.toDoc();
-//            MongoDbUtils.CUSTOMERCOLLECTION.insertOne(dd);
-//            MongoDbUtils.CUSTOMERCOLLECTION.updateOne(eq("_id", d.getObjectId("_id")), Updates.set("", ""), new UpdateOptions().upsert(true));
-////            Document doc = new Document()
-////                    .append("some_key", "value")
-////                .append("array", Arrays.asList(
-////                        new Document().append("key1", "value1"),
-////                        new Document().append("key2", "value2")
-////                ));
-////            MongoDbCollections.CUSTOMERCOLLECTION.insertOne(doc);
-//        }catch (Exception e){
-//            System.out.println(e.getMessage());
-//        }
-//    }
 }
