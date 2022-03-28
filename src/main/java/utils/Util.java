@@ -119,7 +119,7 @@ public class Util {
             if (input.isEmpty()) System.out.println("Value cannot be null.");
             else break;
         }
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         return input;
     }
 
@@ -135,7 +135,7 @@ public class Util {
             if (!m.matches()) System.out.println("Please enter a valid email");
             else break;
         }
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         return input;
     }
 
@@ -145,12 +145,12 @@ public class Util {
             System.out.print("Age: ");
             age = scn.hasNextInt() ? scn.nextInt() : 0;
             scn.nextLine();
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
             if (age < 18) {
                 System.out.println("!! Please enter a valid age above 18 !!");
             }
         }
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         return age;
     }
 
@@ -159,7 +159,7 @@ public class Util {
         while (phone.length() != 10) {
             System.out.print(inputString);
             phone = scn.nextLine();
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
             if (phone.length() != 10) {
                 System.out.println("!! Please enter a valid phone number !!");
             }else{
@@ -178,7 +178,7 @@ public class Util {
         while (true) {
             System.out.print(input);
             id = scn.nextLine();
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
             try {
                 Long.parseLong(id);
                 break;
@@ -197,7 +197,7 @@ public class Util {
             if (input.isEmpty()) System.out.println("Value cannot be null.");
             else break;
         }
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         return input;
     }
 
@@ -209,7 +209,7 @@ public class Util {
             if (input.isEmpty()) System.out.println("Value cannot be null.");
             else break;
         }
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         return input;
     }
 
@@ -269,7 +269,7 @@ public class Util {
             if (input.isEmpty()) System.out.println("Value cannot be null.");
             else break;
         }
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         return input;
     }
 
@@ -281,7 +281,7 @@ public class Util {
             if (input.isEmpty()) System.out.println("Value cannot be null.");
             else break;
         }
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         return input;
     }
 }

@@ -28,12 +28,12 @@ public class AdminFunctions {
         int choice = 0;
 
         while (choice != 2) {
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
             showAuthenticationMenu();
             System.out.print("Your Choice: ");
             choice = scn.hasNextInt() ? scn.nextInt() : 0;
             scn.nextLine();
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
 
             switch (choice) {
                 case 1 -> login();
@@ -88,12 +88,12 @@ public class AdminFunctions {
         int choice = 0;
 
         while (choice != 10) {
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
             showMainMenu();
             System.out.print("Your Choice: ");
             choice = scn.hasNextInt() ? scn.nextInt() : 0;
             scn.nextLine();
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
 
             switch (choice) {
                 case 1 -> approveRequests();
@@ -132,7 +132,7 @@ public class AdminFunctions {
     }
 
     private static void approveRequests(){
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
 
         Bson query = eq("isApproved", false);
         ArrayList<Document> requests = new ArrayList<>();
@@ -278,7 +278,7 @@ public class AdminFunctions {
             Customer c = Util.docToCustomer(x);
             return (c.isDefaulter());
         }).toList();
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         System.out.format("Total Connections: %d\n", allCustomers.size());
         System.out.format("Active Connections: %d\n", activeCustomers.size());
         System.out.format("Defaulters : %d\n", defaulters.size());
@@ -321,7 +321,7 @@ public class AdminFunctions {
 
     private static void viewUsageDetails() {
 
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
 
         Customer customer = getUserFromEmail();
         ArrayList<Usage> usage = (ArrayList<Usage>) customer.getHistory();
@@ -346,7 +346,7 @@ public class AdminFunctions {
 
     private static void viewComplaints() {
 
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
 
         Bson query = eq("status", "pending");
         ArrayList<Document> complaints = new ArrayList<>();
@@ -395,7 +395,7 @@ public class AdminFunctions {
     private void register(){
 
         Customer customer = new Customer();
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         System.out.println("--- Registration ---");
         System.out.println("Please fill in the details below to register for a new connection");
 
@@ -491,7 +491,7 @@ public class AdminFunctions {
             System.out.print("Your Choice: ");
             choice = scn.hasNextInt() ? scn.nextInt() : 0;
             scn.nextLine();
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
 
             Customer customer = null;
             if(choice != 7) {

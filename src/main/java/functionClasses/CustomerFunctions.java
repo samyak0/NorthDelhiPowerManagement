@@ -24,12 +24,12 @@ public class CustomerFunctions {
         int choice = 0;
 
         while (choice != 4) {
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
             showAuthenticationMenu();
             System.out.print("Your Choice: ");
             choice = scn.hasNextInt() ? scn.nextInt() : 0;
             scn.nextLine();
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
 
             switch (choice) {
                 case 1 -> {
@@ -62,7 +62,7 @@ public class CustomerFunctions {
     private void register(){
 
         Customer customer = new Customer();
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         System.out.println("--- Registration ---");
         System.out.println("Please fill in the details below to register for a new connection");
 
@@ -162,7 +162,7 @@ public class CustomerFunctions {
 
     private void forgotPassword() {
 
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         System.out.println("Enter you email: ");
         String email = Util.inputEmail();
         Bson query = eq("email", email);
@@ -211,12 +211,12 @@ public class CustomerFunctions {
         int choice = 0;
 
         while (choice != 7) {
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
             showMainMenu();
             System.out.print("Your Choice: ");
             choice = scn.hasNextInt() ? scn.nextInt() : 0;
             scn.nextLine();
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
 
             switch (choice) {
                 case 1 -> {
@@ -297,7 +297,7 @@ public class CustomerFunctions {
             System.out.print("Your Choice: ");
             choice = scn.hasNextInt() ? scn.nextInt() : 0;
             scn.nextLine();
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
 
             switch (choice) {
                 case 1 -> Util.updateInDatabase(MongoDbUtils.CUSTOMERCOLLECTION, currentUser.getId(),"name", Util.inputName());

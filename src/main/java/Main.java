@@ -7,11 +7,11 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
         System.out.println("NORTH DELHI POWER MANAGEMENT SYSTEM");
         System.out.println("Connecting to Database...");
         if(!MongoDbUtils.initialize()) return;
-        System.out.print("\033[H\033[2J"); // To clear the terminal
+        System.out.println();
 
         Scanner scn = new Scanner(System.in);
         int choice = 0;
@@ -23,7 +23,7 @@ public class Main {
             System.out.print("Your Choice: ");
             choice = scn.hasNextInt() ? scn.nextInt() : 0;
             scn.nextLine();
-            System.out.print("\033[H\033[2J"); // To clear the terminal
+            System.out.println();
             switch (choice) {
                 case 1 -> customerFunctions.startAuthenticationFlow();
                 case 2 -> adminFunctions.startAuthenticationFlow();
