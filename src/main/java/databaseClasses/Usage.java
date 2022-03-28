@@ -4,7 +4,7 @@ public class Usage {
 
     public Usage() {
     }
-    public Usage(String month, String year, int readingUnits, int usedUnits, Double billAmount, boolean paid) {
+    public Usage(String month, String year, int readingUnits, int usedUnits, Double billAmount, String paid) {
         this.month = month;
         this.year = year;
         this.readingUnits = readingUnits;
@@ -18,6 +18,6 @@ public class Usage {
     public int readingUnits;
     public int usedUnits;
     public double billAmount;
-    public boolean paid;
+    public String paid;
 
 }

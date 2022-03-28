@@ -8,6 +8,7 @@ import databaseClasses.Request;
 import databaseClasses.Usage;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 import utils.MongoDbUtils;
 import utils.Util;
@@ -172,6 +173,15 @@ public class AdminFunctions {
     }
 
     private static void resolveRequest(Request request){
+
+        switch (request.getRequestType().toString()){
+            case "NEW_CONNECTION" -> assignNewConnection(request);
+            case "BILL_PAYMENT" -> acceptBillPayment(request);
+            case "TERMINATION" -> terminateConnection(request);
+        }
+    }
+
+    private static void assignNewConnection(Request request){
         try{
             Bson query = eq("settings", "settings");
             int meterId = MongoDbUtils.ADMINCOLLECTION.find(query).limit(1).iterator().next().getInteger("nextMeterId");
@@ -205,7 +215,45 @@ public class AdminFunctions {
         } catch (Exception ignore){
             System.out.println("Error occurred. Please try again.");
         }
+    }
 
+    private static void terminateConnection(Request request){
+
+        try {
+            if (
+                Util.updateKeyValue(MongoDbUtils.CUSTOMERCOLLECTION, request.getCustomerId(), "isRemoved", true) &&
+                Util.updateKeyValue(MongoDbUtils.REQUESTCOLLECTION, request.getId(), "isApproved", true)
+            )
+                System.out.println("Request approved successfully");
+            else
+                System.out.println("Error occurred. Please try again.");
+        } catch (Exception ignore){
+            System.out.println("Error occurred. Please try again.");
+        }
+    }
+
+    private static void acceptBillPayment(Request request){
+        try {
+            Bson query = eq("_id", new ObjectId(request.getCustomerId()));
+            Document doc = MongoDbUtils.CUSTOMERCOLLECTION.find(query).limit(1).iterator().next();
+            Customer c = Util.docToCustomer(doc);
+            List<String> months = request.getPaidMonths();
+            List<Usage> usage = c.getHistory();
+
+            for (int i = 0; i < months.size(); ++i) {
+                if (months.get(i).equals(usage.get(i).month + ", " + usage.get(i).year)) {
+                    usage.get(i).paid = "paid";
+                }
+            }
+            Document updatedCustomer = c.toDoc();
+            query = eq("_id", new ObjectId(c.getId()));
+
+            MongoDbUtils.CUSTOMERCOLLECTION.replaceOne(query, updatedCustomer);
+            Util.updateKeyValue(MongoDbUtils.REQUESTCOLLECTION, request.getId(), "isApproved", true);
+            System.out.println("Request approved successfully");
+        } catch (Exception ignore) {
+            System.out.println("Error occurred. Please try again.");
+        }
     }
 
     private static void generateReadings() {
@@ -246,13 +294,13 @@ public class AdminFunctions {
             u.readingUnits = c.getReadingUnits() + thisMonthUsage;
             c.setReadingUnits(u.readingUnits);
             u.billAmount = calculateBill(thisMonthUsage);
-            u.paid = false;
+            u.paid = "unpaid";
             u.usedUnits = thisMonthUsage;
             usageList = (ArrayList<Usage>) c.getHistory();
             usageList.add(0, u);
 
             if(usageList.size() > 1)
-                if (!usageList.get(1).paid) {
+                if (!usageList.get(1).paid.equals("unpaid")) {
                     c.setPaused(true);
                     c.setDefaulter(true);
                 }

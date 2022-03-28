@@ -12,6 +12,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Console;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -76,7 +77,8 @@ public class Util {
                 doc.getString("customerId"),
                 doc.getBoolean("isApproved"),
                 Request.RequestType.valueOf(doc.getString("requestType")),
-                doc.getString("email")
+                doc.getString("email"),
+                doc.getList("paidMonths", String.class)
         );
     }
 
@@ -203,9 +205,9 @@ public class Util {
 
     public static String inputPassword(String inputString) {
         String input;
+        Console console = System.console();
         while (true) {
-            System.out.print(inputString);
-            input = scn.nextLine();
+            input = String.valueOf(console.readPassword(inputString));
             if (input.isEmpty()) System.out.println("Value cannot be null.");
             else break;
         }
@@ -257,7 +259,7 @@ public class Util {
                 doc.getInteger("readingUnits"),
                 doc.getInteger("usedUnits"),
                 doc.getDouble("billAmount"),
-                doc.getBoolean("paid")
+                doc.getString("paid")
         );
     }
 

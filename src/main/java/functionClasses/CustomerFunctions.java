@@ -10,6 +10,8 @@ import org.bson.types.ObjectId;
 import utils.MongoDbUtils;
 import utils.Util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import static com.mongodb.client.model.Filters.and;
@@ -381,21 +383,21 @@ public class CustomerFunctions {
         } else if (currentUser.getHistory().isEmpty()) {
             System.out.println("No usage for your meter found !!");
             return;
-        } else if (currentUser.getHistory().get(0).paid){
+        } else if (!currentUser.getHistory().get(0).paid.equals("unpaid")){
             System.out.println("All bills paid !!");
             return;
         }
 
         double totalPrice = 0;
         for(Usage u : currentUser.getHistory()) {
-            if(u.paid) break;
+            if(!u.paid.equals("unpaid")) break;
             totalPrice += u.billAmount;
             System.out.println("----------------");
             System.out.format("Period: %s, %s\n", u.month, u.year);
             System.out.format("\tTotal usage: %d units\n", u.readingUnits);
             System.out.format("\tThis month Usage: %d units\n", u.usedUnits);
             System.out.format("\tBill Amount: %f\n", u.billAmount);
-            System.out.format("\tPaid: %b\n", u.paid);
+            System.out.format("\tPaid: %S\n", u.paid);
         }
         System.out.println("--------------------");
         System.out.format("Your total bill amount is %f\n", totalPrice);
@@ -411,9 +413,11 @@ public class CustomerFunctions {
         }
 
         if (choice == 1){
+            List<String> months = new ArrayList<>();
             for (Usage u : currentUser.getHistory()){
-                if (u.paid) break;
-                u.paid = true;
+                if (!u.paid.equals("unpaid")) break;
+                u.paid = "pending approval";
+                months.add(u.month + ", " + u.year);
             }
             if(currentUser.isDefaulter()){
                 currentUser.setDefaulter(false);
@@ -423,7 +427,12 @@ public class CustomerFunctions {
             Document docToCustomer = currentUser.toDoc();
             Bson query = eq("_id", new ObjectId(currentUser.getId()));
             MongoDbUtils.CUSTOMERCOLLECTION.replaceOne(query, docToCustomer);
-            System.out.println("Bill paid successfully");
+
+            Request req = new Request(currentUser.getId(), false, Request.RequestType.BILL_PAYMENT, currentUser.getEmail(), months);
+            Document reqDoc = req.toDoc();
+            MongoDbUtils.REQUESTCOLLECTION.insertOne(reqDoc);
+
+            System.out.println("Bill paid successfully, please wait for admin to approve your payment");
         }
 
     }
@@ -451,8 +460,19 @@ public class CustomerFunctions {
         else if(currentUser.isRemoved())
             System.out.println("Your connection is already terminated.");
         else{
-            Util.updateInDatabase(MongoDbUtils.CUSTOMERCOLLECTION, currentUser.getId(),"isRemoved", true);
-            System.out.println("Connection terminated successfully");
+            try {
+                //Create a request for admin to Approve.
+                Request req = new Request(currentUser.getId(), false, Request.RequestType.TERMINATION, currentUser.getEmail());
+                Document reqDoc = req.toDoc();
+                MongoDbUtils.REQUESTCOLLECTION.insertOne(reqDoc);
+                //Pause the connection
+                Util.updateInDatabase(MongoDbUtils.CUSTOMERCOLLECTION, currentUser.getId(), "isPaused", true);
+
+                System.out.println("Request for termination submitted.");
+                System.out.println("Connection paused till then...");
+            }catch (Exception ignore){
+                System.out.println("Something went wrong, please try again.");
+            }
         }
         refreshData();
     }
