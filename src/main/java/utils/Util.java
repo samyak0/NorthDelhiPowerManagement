@@ -24,7 +24,7 @@ import static java.util.Map.entry;
 public class Util {
 
     private static final Scanner scn = new Scanner(System.in);
-    public static Map<Integer, String> MONTH_MAPPING = Map.ofEntries(
+    public static final Map<Integer, String> MONTH_MAPPING = Map.ofEntries(
             entry(1, "JAN"),
             entry(2, "FEB"),
             entry(3, "MAR"),
