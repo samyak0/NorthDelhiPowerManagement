@@ -9,10 +9,17 @@ import databaseClasses.Request;
 import databaseClasses.Usage;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 
+import javax.naming.SizeLimitExceededException;
 import java.io.Console;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -56,7 +63,8 @@ public class Util {
                 doc.getBoolean("isPaused"),
                 doc.getBoolean("isRemoved"),
                 doc.getBoolean("isDefaulter"),
-                doc.getList("history", Document.class)
+                doc.getList("history", Document.class),
+                doc.get("identityDocument", Binary.class)
         );
     }
 
@@ -285,5 +293,37 @@ public class Util {
         }
         System.out.println();
         return input;
+    }
+
+    public static Binary  inputIdentityDoc() {
+
+        Binary binaryDoc;
+        while (true) {
+            System.out.println();
+            System.out.println("Please enter path to your identity Document.(0 to exit)");
+            System.out.println("File Type: PDF\nMax Size: 10 MB");
+            System.out.println("Path: ");
+            String path = scn.nextLine();
+            if (path.equals(String.valueOf(0))){
+                return null;
+            }
+            try{
+                if (!path.endsWith(".pdf")) throw new IllegalArgumentException();
+                Path file = Paths.get(path);
+                byte [] fileBytes = Files.readAllBytes(file);
+                if(fileBytes.length > 10485760) throw new SizeLimitExceededException();
+                binaryDoc = new Binary(fileBytes);
+                break;
+            } catch (InvalidPathException e){
+                System.out.println("No file found at the path. Please try again...");
+            } catch (IOException | OutOfMemoryError | SecurityException e) {
+                System.out.println("Unable to read data from the file. Please try again...");
+            } catch (SizeLimitExceededException e) {
+                System.out.println("File size cannot be greater than 10 MB. Please try again...");
+            } catch (IllegalArgumentException e){
+                System.out.println("Only PDFs are allowed. Please try again...");
+            }
+        }
+        return binaryDoc;
     }
 }

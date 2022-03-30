@@ -6,6 +6,7 @@ import databaseClasses.Request;
 import databaseClasses.Usage;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import utils.MongoDbUtils;
 import utils.Util;
@@ -61,7 +62,7 @@ public class CustomerFunctions {
         System.out.println("-----------------------");
     }
 
-    private void register(){
+    private void register() {
 
         Customer customer = new Customer();
         System.out.println();
@@ -114,6 +115,14 @@ public class CustomerFunctions {
 
         customer.setSecurityQuestion(Util.inputSecurityQuestion());
         customer.setSecurityAnswer(Util.inputSecurityAnswer());
+
+        Binary identityDoc = Util.inputIdentityDoc();
+        if (identityDoc == null){
+            System.out.println("Exiting Registration flow.");
+            return;
+        }
+        customer.setIdentityDocument(identityDoc);
+
         customer.setPaused(true);
         try {
             //Insert Customer Document in Customer Collection.

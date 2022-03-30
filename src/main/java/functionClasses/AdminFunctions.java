@@ -8,11 +8,18 @@ import databaseClasses.Request;
 import databaseClasses.Usage;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 import utils.MongoDbUtils;
 import utils.Util;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -88,7 +95,7 @@ public class AdminFunctions {
         Scanner scn = new Scanner(System.in);
         int choice = 0;
 
-        while (choice != 10) {
+        while (choice != 11) {
             System.out.println();
             showMainMenu();
             System.out.print("Your Choice: ");
@@ -106,13 +113,13 @@ public class AdminFunctions {
                 case 7 -> updateAccountDetails();
                 case 8 -> pauseConnection();
                 case 9 -> terminateConnection();
-                case 10 -> logout();
+                case 10 -> seeProof();
+                case 11 -> logout();
                 default -> System.out.println("!! Please enter a valid choice !!\n");
             }
             if (this.adminId == null) break;
         }
     }
-
 
     private  void showMainMenu(){
         System.out.println("------ Admin Menu ------");
@@ -128,7 +135,8 @@ public class AdminFunctions {
         System.out.println(" 8. Pause/Resume Connection");
         System.out.println(" 9. Terminate connection");
         System.out.println("-----------------------");
-        System.out.println(" 10. Logout");
+        System.out.println(" 10. Check Identity Proof of a user");
+        System.out.println(" 11. Logout");
         System.out.println("-----------------------");
     }
 
@@ -493,9 +501,19 @@ public class AdminFunctions {
 
         customer.setSecurityQuestion(Util.inputSecurityQuestion());
         customer.setSecurityAnswer(Util.inputSecurityAnswer());
+
+        Binary identityDoc = Util.inputIdentityDoc();
+        if (identityDoc == null){
+            System.out.println("Exiting Registration flow.");
+            System.out.println("Press any key to continue.");
+            scn.nextLine();
+            return;
+        }
+        customer.setIdentityDocument(identityDoc);
+
         try {
 
-            //Alot meter id to customer
+            //Allot meter id to customer
             Bson query = eq("settings", "settings");
             int meterId = MongoDbUtils.ADMINCOLLECTION.find(query).limit(1).iterator().next().getInteger("nextMeterId");
             Bson update = Updates.set("nextMeterId", meterId+1);
@@ -624,6 +642,33 @@ public class AdminFunctions {
         } else{
             Util.updateInDatabase(MongoDbUtils.CUSTOMERCOLLECTION, customer.getId(),"isRemoved", true);
             System.out.println("Connection terminated successfully");
+            System.out.println("Press any key to continue.");
+            scn.nextLine();
+        }
+    }
+
+    private static void seeProof() {
+        System.out.println("Enter email of the user.");
+        Customer c = getUserFromEmail();
+
+        if(c.getIdentityDocument() == null){
+            System.out.println("No identity document found for this user.");
+            System.out.println("Press any key to continue.");
+            scn.nextLine();
+            return;
+        }
+
+        byte [] fileBytes =  c.getIdentityDocument().getData();
+        try {
+            new File("identity_proofs").mkdir();
+            Path file = Paths.get("identity_proofs/" + c.getEmail() + "_identity_proof.pdf");
+            Files.write(file, fileBytes);
+        } catch (IOException | SecurityException e){
+            System.out.println("Unable to create a new file in your system.");
+            System.out.println("Press any key to continue.");
+            scn.nextLine();
+        } catch (InvalidPathException e){
+            System.out.println("Internal error occurred. Please try again later.");
             System.out.println("Press any key to continue.");
             scn.nextLine();
         }

@@ -1,6 +1,7 @@
 package databaseClasses;
 
 import org.bson.Document;
+import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import utils.Util;
 
@@ -12,7 +13,7 @@ public class Customer {
 
     public Customer() {}
 
-    public Customer(String id, String name, String password, String phone, String altPhone, String address, String email, String securityQuestion, String securityAnswer, int age, String meterId, int readingUnits, boolean isPaused, boolean isRemoved, boolean isDefaulter, List<Document> history) {
+    public Customer(String id, String name, String password, String phone, String altPhone, String address, String email, String securityQuestion, String securityAnswer, int age, String meterId, int readingUnits, boolean isPaused, boolean isRemoved, boolean isDefaulter, List<Document> history, Binary identityDocument) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -29,6 +30,7 @@ public class Customer {
         this.isRemoved = isRemoved;
         this.isDefaulter = isDefaulter;
         this.history = (history == null || history.size() == 0) ? new ArrayList<>() : history.stream().map(Util::docToUsage).collect(Collectors.toList());
+        this.identityDocument = identityDocument;
     }
 
     private String id;
@@ -47,6 +49,7 @@ public class Customer {
     private boolean isRemoved;
     private boolean isDefaulter;
     private List<Usage> history = new ArrayList<>();
+    private Binary identityDocument = null;
 
     public Document toDoc() {
         Document doc = new Document()
@@ -64,7 +67,8 @@ public class Customer {
                 .append("isPaused", this.isPaused)
                 .append("isRemoved", this.isRemoved)
                 .append("isDefaulter", this.isDefaulter)
-                .append("history", this.history.stream().map(Util::usageToDoc).collect(Collectors.toList()));
+                .append("history", this.history.stream().map(Util::usageToDoc).collect(Collectors.toList()))
+                .append("identityDocument", this.identityDocument);
         if(this.id != null){
             doc.append("_id", new ObjectId(this.id));
         }
@@ -193,6 +197,14 @@ public class Customer {
 
     public void setDefaulter(boolean defaulter) {
         isDefaulter = defaulter;
+    }
+
+    public Binary getIdentityDocument() {
+        return identityDocument;
+    }
+
+    public void setIdentityDocument(Binary identityDocument) {
+        this.identityDocument = identityDocument;
     }
 }
 
